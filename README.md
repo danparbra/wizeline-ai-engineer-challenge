@@ -10,11 +10,13 @@ wizeline-ai-engineer-challenge/
 ├── containers/             
 │   └── lambda_predictor/   # Lambda function for predictions
 ├── src/
-│   ├── data_transformation.py  # Data preprocessing pipeline
-│   ├── model_trainer.py        # Model training implementation
-│   ├── utils.py               # Helper functions
-│   ├── logger.py             # Logging configuration
-│   └── exception.py          # Custom exception handling
+│   ├── data_ingestion.py       # Data ingestion task to load dataset
+│   ├── data_transformation.py  # Data preprocessing task to process and transform dataset before training tasks
+│   ├── model_trainer.py        # Model training implementation for the regression task with hyperparameter tuning
+│   ├── pipeline.py       		# Prediction pipeline that trains 
+│   ├── utils.py                # Helper functions
+│   ├── logger.py               # Logging configuration
+│   └── exception.py            # Custom exception handling
 └── README.md
 ```
 
@@ -57,7 +59,7 @@ cd wizeline-ai-engineer-challenge
 2. Set up Python virtual environment:
 ```bash
 uv venv --python 3.11
-source venv/bin/activate  # On Windows: .\venv\Scripts\activate
+source .venv/bin/activate  # On Windows: .\venv\Scripts\activate
 ```
 
 3. Install dependencies:
@@ -70,12 +72,13 @@ uv sync
 uv run src/model_trainer.py
 ```
 
-### Making Predictions
-
-To make predictions using the local training pipeline (this will predict for all the data points in the `blind_test_data.csv` file):
+5. Once the model has been trained, run the prediction pipeline:
 ```bash
 uv run src/pipeline.py
 ```
+
+### Making Predictions
+
 To make single point predictions using the deployed service in AWS:
 ```bash
 curl -X POST https://fpzixt1flh.execute-api.us-east-1.amazonaws.com/default/submit \
@@ -83,7 +86,7 @@ curl -X POST https://fpzixt1flh.execute-api.us-east-1.amazonaws.com/default/subm
   -d '{"feature_1": value_1, "feature_2": value_2, ...}'
 # Or using Postman for a request to a REST API using the above URL and example payload
 ```
-Alternatively a CSV file can be saved into the deployed S3 bucket to make bulk predictions. The predictions will be saved in a different folder.
+Alternatively, a CSV file can be saved into the deployed S3 bucket to make bulk predictions. The predictions from the model are computed by the Lambda function and then saved into a different folder in the S3 bucket.
 
 ## Improvements
 
