@@ -2,6 +2,7 @@ resource "aws_sqs_queue" "requests_api_queue" {
   name                        = "api_requests_queue"
   delay_seconds               = 0
   receive_wait_time_seconds   = 0
+  visibility_timeout_seconds  = 600
 }
 
 resource "aws_iam_role" "requests_api_role" {

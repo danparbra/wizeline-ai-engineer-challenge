@@ -1,6 +1,6 @@
 ifneq (,$(wildcard ./.env))
-    include .env
-    export
+	include .env
+	export
 endif
 
 # Default values for required variables
@@ -16,21 +16,21 @@ ECR_URL = $(BASE_ECR_URL)/$(ECR_REPO_NAME)
 
 # Build Docker image
 build-docker:
-    docker build --platform=linux/amd64 --provenance=false -t $(IMAGE_NAME) .
+	docker build --platform=linux/amd64 --provenance=false -t $(IMAGE_NAME) .
 
 # Tag and push Docker image to ECR
 push-docker:
-    aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin $(BASE_ECR_URL)
-    docker tag $(IMAGE_NAME):latest $(ECR_URL):latest
-    docker push $(ECR_URL):latest
+	aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin $(BASE_ECR_URL)
+	docker tag $(IMAGE_NAME):latest $(ECR_URL):latest
+	docker push $(ECR_URL):latest
 
 # Create ECR repository (if it doesn't exist)
 create-ecr-repo:
-    aws ecr describe-repositories --repository-names $(ECR_REPO_NAME) --region $(AWS_REGION) || aws ecr create-repository --repository-name $(ECR_REPO_NAME) --region $(AWS_REGION)
+	aws ecr describe-repositories --repository-names $(ECR_REPO_NAME) --region $(AWS_REGION) || aws ecr create-repository --repository-name $(ECR_REPO_NAME) --region $(AWS_REGION)
 
 # Update Lambda function
 update-lambda:
-    AWS_PAGER="" aws lambda update-function-code --function-name $(LAMBDA) --image-uri $(ECR_URL):latest
+	AWS_PAGER="" aws lambda update-function-code --function-name $(LAMBDA) --image-uri $(ECR_URL):latest
 
 # Combined tasks
 build-and-push: build-docker push-docker

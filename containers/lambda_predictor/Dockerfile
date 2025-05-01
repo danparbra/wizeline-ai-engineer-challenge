@@ -13,8 +13,8 @@ COPY . ${FUNCTION_DIR}
 # Install the function's dependencies
 WORKDIR ${FUNCTION_DIR}
 RUN pip install --no-cache-dir --target ${FUNCTION_DIR} -r requirements.txt && \
-    pip install --no-cache-dir --target ${FUNCTION_DIR} awslambdaric==3.0.1 && \
-    rm -rf ~/.cache/pip
+    pip install --no-cache-dir --target ${FUNCTION_DIR} awslambdaric==3.0.1 && \
+    rm -rf ~/.cache/pip
 
 # Use a slim version of the base Python image to reduce the final image size
 FROM python:3.11-slim-bookworm
